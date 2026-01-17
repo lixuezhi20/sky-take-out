@@ -6,6 +6,7 @@ import com.sky.dto.SetmealPageQueryDTO;
 import com.sky.entity.Setmeal;
 import com.sky.enumeration.OperationType;
 import com.sky.vo.SetmealVO;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
@@ -25,10 +26,7 @@ public interface SetmealMapper {
      * 新增套餐
      * @param setmeal
      */
-    @Insert("insert into setmeal (category_id, name, price, status, description, image, create_time, update_time, create_user, update_user)" +
-            " values" +
-            "(#{categoryId},#{name}, #{price}, #{status}, #{description}, #{image}, #{createTime},#{updateTime}, #{createUser}, #{updateUser})")
-    @AutoFill(value = OperationType.INSERT)
+       @AutoFill(value = OperationType.INSERT)
     void insert(Setmeal setmeal);
 
     /**
@@ -37,4 +35,26 @@ public interface SetmealMapper {
      * @return
      */
     Page<SetmealVO> setmealQuery(SetmealPageQueryDTO setmealPageQueryDTO);
+
+    /**
+     * 根据Id查询套餐
+     * @param setmealId
+     * @return
+     */
+    @Select("select * from setmeal where id=#{setmealId};")
+    Setmeal getById(Long setmealId);
+
+    /**
+     * 根据Id删除套餐
+     * @param id
+     */
+    @Delete("delete from setmeal where id=#{id};")
+    void deleteById(Long id);
+
+    /**
+     * 根据套餐id删除套餐和菜品的关联关系
+     * @param setmealId
+     */
+    @Delete("delete from setmeal_dish where setmeal_id=#{setmealId};")
+    void deleteBySetmealId(Long setmealId);
 }
